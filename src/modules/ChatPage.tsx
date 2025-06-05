@@ -29,73 +29,35 @@ const ChatPage = ({
 
     // If this is an AI chat, get AI response
     if (chat.isAi) {
-      try {
-        // Prepare messages for Gemini
-        const contents = [...chat.messages, newMessage].map((msg) => ({
-          role: msg.fromMe ? "user" : "model",
-          parts: [{ text: msg.text }],
-        }));
-
-        const GEMINI_API_KEY = "AIzaSyBmI8GVuiRa-6DknREGe8utBD7lSt7Qynk";
-        const response = await axios.post(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-          {
-            contents,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        const aiText =
-          response.data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-        if (aiText) {
-          setChats((prev) =>
-            prev.map((c) =>
-              c.id === chat.id
-                ? {
-                    ...c,
-                    messages: [...c.messages, { text: aiText, fromMe: false }],
-                  }
-                : c
-            )
-          );
-        }
-      } catch (err: any) {
-        console.error("Gemini API error:", err?.response?.data || err);
-        setChats((prev) =>
-          prev.map((c) =>
-            c.id === chat.id
-              ? {
-                  ...c,
-                  messages: [
-                    ...c.messages,
-                    {
-                      text:
-                        "AI error: Could not get response. " +
-                        (err?.response?.data?.error?.message ||
-                          err.message ||
-                          ""),
-                      fromMe: false,
-                    },
-                  ],
-                }
-              : c
-          )
-        );
-      }
+      // Instead of calling the API, just add a dummy AI response
+      const dummyAIResponse: Message = {
+        text: "This is a dummy AI response.",
+        fromMe: false,
+      };
+      setChats((prev) =>
+        prev.map((c) =>
+          c.id === chat.id
+            ? {
+                ...c,
+                messages: [...c.messages, dummyAIResponse],
+              }
+            : c
+        )
+      );
     }
   };
 
-  return (
+  return chat ? (
     <ChatWindow
-      chat={chat ?? null}
+      chat={chat}
       input={input}
       setInput={setInput}
       onSend={sendMessage}
     />
+  ) : (
+    <div style={{ padding: 32, textAlign: "center" }}>
+      <h2>Select a chat to start messaging</h2>
+    </div>
   );
 };
 
