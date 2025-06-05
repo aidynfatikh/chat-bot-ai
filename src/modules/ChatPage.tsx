@@ -2,7 +2,6 @@ import { useParams } from "react-router-dom";
 import ChatWindow from "./ChatWindow";
 import type { Chat, Message } from "./types";
 import { useState } from "react";
-import axios from "axios";
 
 const ChatPage = ({
   chats,
