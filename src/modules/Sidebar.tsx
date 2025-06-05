@@ -7,17 +7,20 @@ const Sidebar = ({
   onAddChat,
   onAddAIChat,
   onDeleteChat,
+  onAddAIChatWithName,
 }: {
   chats: Chat[];
   onAddChat: (name: string) => void;
   onAddAIChat: () => void;
   onDeleteChat: (id: string) => void;
+  onAddAIChatWithName?: (name: string) => void;
 }) => {
   const [newChatName, setNewChatName] = useState("");
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
   const [visibleCount, setVisibleCount] = useState(20); // Number of chats to show initially
   const chatListRef = useRef<HTMLDivElement | null>(null);
+  const [aiAgentName, setAIAgentName] = useState("");
 
   const filteredChats = chats.filter(
     (chat) =>
@@ -44,8 +47,11 @@ const Sidebar = ({
       style={{
         background: "var(--bg-secondary)",
         borderRight: "1px solid var(--border-color)",
+        width: 350,
+        minWidth: 350,
+        maxWidth: 350,
       }}
-      className="w-[30%] h-screen p-4 flex flex-col"
+      className="h-screen p-4 flex flex-col"
     >
       <h2
         style={{ color: "var(--text-primary)" }}
@@ -87,18 +93,31 @@ const Sidebar = ({
                       background: "var(--bg-primary)",
                       color: "var(--text-primary)",
                       border: "1px solid var(--border-color)",
+                      minWidth: 0,
+                      maxWidth: "100%",
                     }}
-                    className="block p-3 rounded hover:brightness-95 flex-1 w-full min-w-0"
+                    className="block p-3 rounded hover:brightness-95 flex-1 w-full min-w-0 max-w-full"
                   >
                     <div
-                      style={{ color: "var(--text-primary)" }}
-                      className="font-semibold"
+                      style={{
+                        color: "var(--text-primary)",
+                        minWidth: 0,
+                        maxWidth: "100%",
+                      }}
+                      className="font-semibold truncate"
                     >
                       {chat.name}
                     </div>
                     <div
-                      style={{ color: "var(--text-secondary)" }}
-                      className="text-sm truncate w-full max-w-full overflow-hidden whitespace-nowrap block"
+                      style={{
+                        color: "var(--text-secondary)",
+                        maxWidth: "100%",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        minWidth: 0,
+                      }}
+                      className="text-sm truncate w-full block"
                     >
                       {chat.messages[chat.messages.length - 1]?.text}
                     </div>
@@ -140,18 +159,31 @@ const Sidebar = ({
                       background: "var(--bg-primary)",
                       color: "var(--text-primary)",
                       border: "1px solid var(--border-color)",
+                      minWidth: 0,
+                      maxWidth: "100%",
                     }}
-                    className="block p-3 rounded hover:brightness-95 flex-1 w-full min-w-0"
+                    className="block p-3 rounded hover:brightness-95 flex-1 w-full min-w-0 max-w-full"
                   >
                     <div
-                      style={{ color: "var(--text-primary)" }}
-                      className="font-semibold"
+                      style={{
+                        color: "var(--text-primary)",
+                        minWidth: 0,
+                        maxWidth: "100%",
+                      }}
+                      className="font-semibold truncate"
                     >
                       {chat.name}
                     </div>
                     <div
-                      style={{ color: "var(--text-secondary)" }}
-                      className="text-sm truncate w-full max-w-full overflow-hidden whitespace-nowrap block"
+                      style={{
+                        color: "var(--text-secondary)",
+                        maxWidth: "100%",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        minWidth: 0,
+                      }}
+                      className="text-sm truncate w-full block"
                     >
                       {chat.messages[chat.messages.length - 1]?.text}
                     </div>
@@ -211,14 +243,45 @@ const Sidebar = ({
           Add
         </button>
       </div>
-      {/* AI Chat Button */}
-      <div className="mt-8 flex justify-center">
+      {/* AI Chat Name Input and Button */}
+      <div className="flex gap-2 mt-4 ">
+        <input
+          type="text"
+          value={aiAgentName}
+          onChange={(e) => setAIAgentName(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && aiAgentName.trim()) {
+              if (typeof onAddAIChatWithName === "function") {
+                onAddAIChatWithName(aiAgentName.trim());
+              } else {
+                onAddAIChat();
+              }
+              setAIAgentName("");
+            }
+          }}
+          placeholder="AI agent name"
+          style={{
+            background: "var(--bg-primary)",
+            color: "var(--text-primary)",
+            border: "1px solid var(--border-color)",
+          }}
+          className="flex-1 px-3 py-2 rounded-full outline-none text-sm"
+        />
         <button
           style={{ background: "#22c55e" }}
-          className="text-white px-6 py-2 rounded-full hover:brightness-90 transition shadow"
-          onClick={onAddAIChat}
+          className="text-white px-4 py-2 rounded-full hover:brightness-90 transition"
+          onClick={() => {
+            if (aiAgentName.trim()) {
+              if (typeof onAddAIChatWithName === "function") {
+                onAddAIChatWithName(aiAgentName.trim());
+              } else {
+                onAddAIChat();
+              }
+              setAIAgentName("");
+            }
+          }}
         >
-          Chat with AI
+          Add
         </button>
       </div>
     </aside>

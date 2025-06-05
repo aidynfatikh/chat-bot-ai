@@ -85,6 +85,20 @@ const App = () => {
           };
           setChats([...chats, aiChat]);
         }}
+        onAddAIChatWithName={(name: string) => {
+          const aiChat: Chat = {
+            id: "ai-" + Date.now().toString(),
+            name,
+            messages: [
+              {
+                text: `Hello! I am ${name}. How can I help you today?`,
+                fromMe: false,
+              },
+            ],
+            isAi: true,
+          };
+          setChats([...chats, aiChat]);
+        }}
         onDeleteChat={deleteChat}
       />
       <Routes>

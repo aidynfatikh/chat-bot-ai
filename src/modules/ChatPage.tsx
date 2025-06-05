@@ -47,14 +47,28 @@ const ChatPage = ({
             }),
           }
         );
+
+        if (!response.ok) {
+          console.error(
+            "Gemini API error:",
+            response.status,
+            response.statusText
+          );
+          throw new Error(
+            `Gemini API error: ${response.status} ${response.statusText}`
+          );
+        }
+
         const data = await response.json();
+        console.log("Gemini API response:", data);
         const aiText =
-          data.candidates?.[0]?.content?.parts?.[0]?.text ||
-          "[No response from Gemini]";
+          data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ||
+          "[Gemini did not return a response. Please try rephrasing your question.]";
         const aiMessage: Message = {
           text: aiText,
           fromMe: false,
         };
+
         setChats((prev) =>
           prev.map((c) =>
             c.id === chat.id
@@ -66,8 +80,11 @@ const ChatPage = ({
           )
         );
       } catch (error) {
+        console.error("Error fetching Gemini response:", error);
         const errorMessage: Message = {
-          text: "[Error fetching Gemini response]",
+          text: `[Error fetching Gemini response: ${
+            error instanceof Error ? error.message : String(error)
+          }]`,
           fromMe: false,
         };
         setChats((prev) =>

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import type { Chat } from "./types";
+import ReactMarkdown from "react-markdown";
 
 type Props = {
   chat: Chat | null;
@@ -117,7 +118,11 @@ const ChatWindow: React.FC<Props> = ({ chat, input, setInput, onSend }) => {
                 msg.fromMe ? "rounded-br-none" : "rounded-bl-none"
               }`}
             >
-              {msg.text}
+              {msg.fromMe ? (
+                msg.text
+              ) : (
+                <ReactMarkdown>{msg.text}</ReactMarkdown>
+              )}
             </div>
           </div>
         ))}
