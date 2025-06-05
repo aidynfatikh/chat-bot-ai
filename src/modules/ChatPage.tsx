@@ -28,21 +28,59 @@ const ChatPage = ({
 
     // If this is an AI chat, get AI response
     if (chat.isAi) {
-      // Instead of calling the API, just add a dummy AI response
-      const dummyAIResponse: Message = {
-        text: "This is a dummy AI response.",
-        fromMe: false,
-      };
-      setChats((prev) =>
-        prev.map((c) =>
-          c.id === chat.id
-            ? {
-                ...c,
-                messages: [...c.messages, dummyAIResponse],
-              }
-            : c
-        )
-      );
+      try {
+        const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+        const response = await fetch(
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" +
+            apiKey,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              contents: [
+                {
+                  parts: [{ text: input }],
+                },
+              ],
+            }),
+          }
+        );
+        const data = await response.json();
+        const aiText =
+          data.candidates?.[0]?.content?.parts?.[0]?.text ||
+          "[No response from Gemini]";
+        const aiMessage: Message = {
+          text: aiText,
+          fromMe: false,
+        };
+        setChats((prev) =>
+          prev.map((c) =>
+            c.id === chat.id
+              ? {
+                  ...c,
+                  messages: [...c.messages, aiMessage],
+                }
+              : c
+          )
+        );
+      } catch (error) {
+        const errorMessage: Message = {
+          text: "[Error fetching Gemini response]",
+          fromMe: false,
+        };
+        setChats((prev) =>
+          prev.map((c) =>
+            c.id === chat.id
+              ? {
+                  ...c,
+                  messages: [...c.messages, errorMessage],
+                }
+              : c
+          )
+        );
+      }
     }
   };
 

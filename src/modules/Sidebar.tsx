@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { Chat } from "./types";
 import { useState } from "react";
 
@@ -15,6 +15,7 @@ const Sidebar = ({
 }) => {
   const [newChatName, setNewChatName] = useState("");
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
   const filteredChats = chats.filter(
     (chat) =>
@@ -97,6 +98,7 @@ const Sidebar = ({
                       )
                     ) {
                       onDeleteChat(chat.id);
+                      navigate("/");
                     }
                   }}
                 >
@@ -146,6 +148,7 @@ const Sidebar = ({
                       )
                     ) {
                       onDeleteChat(chat.id);
+                      navigate("/");
                     }
                   }}
                 >
