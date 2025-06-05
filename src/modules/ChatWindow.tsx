@@ -2,17 +2,17 @@ import React, { useEffect, useRef, useState } from "react";
 import type { Chat } from "./types";
 import ReactMarkdown from "react-markdown";
 
-type Props = {
+interface Props {
   chat: Chat | null;
   input: string;
-  setInput: (value: string) => void;
+  setInput: (input: string) => void;
   onSend: () => void;
-};
+}
 
 const ChatWindow: React.FC<Props> = ({ chat, input, setInput, onSend }) => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
-  const [visibleCount, setVisibleCount] = useState(30); // Number of messages to show initially
+  const [visibleCount, setVisibleCount] = useState(30);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -21,10 +21,9 @@ const ChatWindow: React.FC<Props> = ({ chat, input, setInput, onSend }) => {
   }, [chat?.messages.length]);
 
   useEffect(() => {
-    setVisibleCount(30); // Reset visible messages when chat changes
+    setVisibleCount(30);
   }, [chat?.id]);
 
-  // Infinite scroll handler for messages (load more on scroll to top)
   const handleScroll = () => {
     if (!messagesContainerRef.current) return;
     if (messagesContainerRef.current.scrollTop === 0) {
@@ -39,12 +38,12 @@ const ChatWindow: React.FC<Props> = ({ chat, input, setInput, onSend }) => {
     return (
       <main
         style={{ background: "var(--bg-secondary)" }}
-        className="flex flex-col w-full h-screen items-center justify-center"
+        className="flex flex-col w-full h-screen items-center justify-center p-4"
       >
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center text-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-20 w-20 mb-6"
+            className="h-16 w-16 sm:h-20 sm:w-20 mb-4 sm:mb-6"
             style={{ color: "var(--text-secondary)" }}
             fill="none"
             viewBox="0 0 24 24"
@@ -59,11 +58,14 @@ const ChatWindow: React.FC<Props> = ({ chat, input, setInput, onSend }) => {
           </svg>
           <h2
             style={{ color: "var(--text-secondary)" }}
-            className="text-2xl font-semibold mb-2"
+            className="text-xl sm:text-2xl font-semibold mb-2"
           >
             Select a chat
           </h2>
-          <p style={{ color: "var(--text-secondary)" }}>
+          <p
+            style={{ color: "var(--text-secondary)" }}
+            className="text-sm sm:text-base"
+          >
             Choose a conversation from the sidebar to start messaging.
           </p>
         </div>
@@ -82,11 +84,11 @@ const ChatWindow: React.FC<Props> = ({ chat, input, setInput, onSend }) => {
           background: "var(--bg-primary)",
           borderBottom: "1px solid var(--border-color)",
         }}
-        className="p-6 shadow"
+        className="p-4 sm:p-6 shadow"
       >
         <h2
           style={{ color: "var(--text-primary)" }}
-          className="text-lg font-semibold"
+          className="text-base sm:text-lg font-semibold truncate"
         >
           {chat?.name ?? "Select a chat"}
         </h2>
@@ -96,7 +98,7 @@ const ChatWindow: React.FC<Props> = ({ chat, input, setInput, onSend }) => {
       <div
         ref={messagesContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-4 space-y-2"
+        className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-2"
         style={{ maxHeight: "calc(100vh - 180px)" }}
       >
         {chat?.messages.slice(-visibleCount).map((msg, index) => (
@@ -114,7 +116,7 @@ const ChatWindow: React.FC<Props> = ({ chat, input, setInput, onSend }) => {
                       border: "1px solid var(--border-color)",
                     }
               }
-              className={`max-w-[75%] px-4 py-2 rounded-xl text-xl shadow ${
+              className={`max-w-[85%] sm:max-w-[75%] px-3 sm:px-4 py-2 rounded-xl text-base sm:text-xl shadow ${
                 msg.fromMe ? "rounded-br-none" : "rounded-bl-none"
               }`}
             >
@@ -135,7 +137,7 @@ const ChatWindow: React.FC<Props> = ({ chat, input, setInput, onSend }) => {
           background: "var(--bg-primary)",
           borderTop: "1px solid var(--border-color)",
         }}
-        className="p-5 flex gap-2"
+        className="p-3 sm:p-5 flex gap-2"
       >
         <input
           value={input}
@@ -147,12 +149,12 @@ const ChatWindow: React.FC<Props> = ({ chat, input, setInput, onSend }) => {
             color: "var(--text-primary)",
             border: "1px solid var(--border-color)",
           }}
-          className="flex-grow px-4 py-2 rounded-full outline-none text-xl"
+          className="flex-grow px-3 sm:px-4 py-2 rounded-full outline-none text-base sm:text-xl"
         />
         <button
           onClick={onSend}
           style={{ background: "var(--primary-blue)" }}
-          className="text-white px-4 py-2 rounded-full hover:brightness-90 transition"
+          className="text-white px-3 sm:px-4 py-2 rounded-full hover:brightness-90 transition whitespace-nowrap"
         >
           Send
         </button>
