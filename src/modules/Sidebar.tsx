@@ -28,32 +28,67 @@ const Sidebar = ({
   const userChats = filteredChats.filter((chat) => !chat.isAi);
 
   return (
-    <aside className="w-[30%] h-full bg-gray-100 border-r p-4">
-      <h2 className="text-xl font-bold mb-4">Chats</h2>
+    <aside
+      style={{
+        background: "var(--bg-secondary)",
+        borderRight: "1px solid var(--border-color)",
+      }}
+      className="w-[30%] h-full p-4"
+    >
+      <h2
+        style={{ color: "var(--text-primary)" }}
+        className="text-xl font-bold mb-4"
+      >
+        Chats
+      </h2>
       <input
         type="text"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search chats..."
-        className="w-full mb-4 px-3 py-2 border rounded-full outline-none text-sm"
+        style={{
+          background: "var(--bg-primary)",
+          color: "var(--text-primary)",
+          border: "1px solid var(--border-color)",
+        }}
+        className="w-full mb-4 px-3 py-2 rounded-full outline-none text-sm"
       />
       <ul className="space-y-2">
         {userChats.length > 0 && (
           <>
-            <li className="text-xl text-gray-500 pl-2 pb-1">Your Chats</li>
+            <li
+              style={{ color: "var(--text-secondary)" }}
+              className="text-xl pl-2 pb-1"
+            >
+              Your Chats
+            </li>
             {userChats.map((chat) => (
               <li key={chat.id} className="flex items-center group min-w-0">
                 <Link
                   to={`/chat/${chat.id}`}
-                  className="block p-3 rounded bg-white hover:bg-gray-200 flex-1 w-full min-w-0"
+                  style={{
+                    background: "var(--bg-primary)",
+                    color: "var(--text-primary)",
+                    border: "1px solid var(--border-color)",
+                  }}
+                  className="block p-3 rounded hover:brightness-95 flex-1 w-full min-w-0"
                 >
-                  <div className="font-semibold">{chat.name}</div>
-                  <div className="text-sm text-gray-600 truncate w-full max-w-full overflow-hidden whitespace-nowrap block">
+                  <div
+                    style={{ color: "var(--text-primary)" }}
+                    className="font-semibold"
+                  >
+                    {chat.name}
+                  </div>
+                  <div
+                    style={{ color: "var(--text-secondary)" }}
+                    className="text-sm truncate w-full max-w-full overflow-hidden whitespace-nowrap block"
+                  >
                     {chat.messages[chat.messages.length - 1]?.text}
                   </div>
                 </Link>
                 <button
-                  className="ml-2 text-red-600 hover:text-white hover:bg-red-600 rounded-full w-8 h-8 flex items-center justify-center text-2xl font-bold shadow transition border border-red-200 group-hover:opacity-100 opacity-100"
+                  style={{ color: "#e53935", border: "1px solid #e53935" }}
+                  className="ml-2 hover:text-white hover:bg-red-600 rounded-full w-8 h-8 flex items-center justify-center text-2xl font-bold shadow transition group-hover:opacity-100 opacity-100"
                   title="Delete chat"
                   onClick={() => {
                     if (
@@ -73,20 +108,36 @@ const Sidebar = ({
         )}
         {aiChats.length > 0 && (
           <>
-            <li className="text-xl text-green-600 pl-2 pb-1 mt-4">AI Chats</li>
+            <li style={{ color: "#22c55e" }} className="text-xl pl-2 pb-1 mt-4">
+              AI Chats
+            </li>
             {aiChats.map((chat) => (
               <li key={chat.id} className="flex items-center group min-w-0">
                 <Link
                   to={`/chat/${chat.id}`}
-                  className="block p-3 rounded bg-white hover:bg-gray-200 flex-1 w-full min-w-0"
+                  style={{
+                    background: "var(--bg-primary)",
+                    color: "var(--text-primary)",
+                    border: "1px solid var(--border-color)",
+                  }}
+                  className="block p-3 rounded hover:brightness-95 flex-1 w-full min-w-0"
                 >
-                  <div className="font-semibold">{chat.name}</div>
-                  <div className="text-sm text-gray-600 truncate w-full max-w-full overflow-hidden whitespace-nowrap block">
+                  <div
+                    style={{ color: "var(--text-primary)" }}
+                    className="font-semibold"
+                  >
+                    {chat.name}
+                  </div>
+                  <div
+                    style={{ color: "var(--text-secondary)" }}
+                    className="text-sm truncate w-full max-w-full overflow-hidden whitespace-nowrap block"
+                  >
                     {chat.messages[chat.messages.length - 1]?.text}
                   </div>
                 </Link>
                 <button
-                  className="ml-2 text-red-600 hover:text-white hover:bg-red-600 rounded-full w-8 h-8 flex items-center justify-center text-2xl font-bold shadow transition border border-red-200 group-hover:opacity-100 opacity-100"
+                  style={{ color: "#e53935", border: "1px solid #e53935" }}
+                  className="ml-2 hover:text-white hover:bg-red-600 rounded-full w-8 h-8 flex items-center justify-center text-2xl font-bold shadow transition group-hover:opacity-100 opacity-100"
                   title="Delete chat"
                   onClick={() => {
                     if (
@@ -117,10 +168,16 @@ const Sidebar = ({
             }
           }}
           placeholder="New chat name"
-          className="flex-1 px-3 py-2 border rounded-full outline-none text-sm"
+          style={{
+            background: "var(--bg-primary)",
+            color: "var(--text-primary)",
+            border: "1px solid var(--border-color)",
+          }}
+          className="flex-1 px-3 py-2 rounded-full outline-none text-sm"
         />
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition"
+          style={{ background: "var(--primary-blue)" }}
+          className="text-white px-4 py-2 rounded-full hover:brightness-90 transition"
           onClick={() => {
             if (newChatName.trim()) {
               onAddChat(newChatName.trim());
@@ -134,7 +191,8 @@ const Sidebar = ({
       {/* AI Chat Button */}
       <div className="mt-8 flex justify-center">
         <button
-          className="bg-green-500 text-white px-6 py-2 rounded-full hover:bg-green-600 transition shadow"
+          style={{ background: "#22c55e" }}
+          className="text-white px-6 py-2 rounded-full hover:brightness-90 transition shadow"
           onClick={onAddAIChat}
         >
           Chat with AI

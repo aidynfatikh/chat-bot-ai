@@ -11,4 +11,17 @@
     --border-color: #e4e4e7;
     --message-out: #effdde;
     --message-in: #ffffff;
-  }
+}
+
+.dark {
+    --primary-blue: #54a9eb;
+    --light-blue: #0088cc;
+    --dark-blue: #003366;
+    --bg-primary: #18181b;
+    --bg-secondary: #27272a;
+    --text-primary: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    --border-color: #3f3f46;
+    --message-out: #23272f;
+    --message-in: #18181b;
+}

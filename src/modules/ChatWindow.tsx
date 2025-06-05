@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import type { Chat } from "./types";
 
 type Props = {
@@ -9,13 +9,25 @@ type Props = {
 };
 
 const ChatWindow: React.FC<Props> = ({ chat, input, setInput, onSend }) => {
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [chat?.messages.length]);
+
   if (!chat) {
     return (
-      <main className="flex flex-col w-full h-screen items-center justify-center bg-gray-100">
+      <main
+        style={{ background: "var(--bg-secondary)" }}
+        className="flex flex-col w-full h-screen items-center justify-center"
+      >
         <div className="flex flex-col items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-20 w-20 text-gray-400 mb-6"
+            className="h-20 w-20 mb-6"
+            style={{ color: "var(--text-secondary)" }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -27,10 +39,13 @@ const ChatWindow: React.FC<Props> = ({ chat, input, setInput, onSend }) => {
               d="M17 8h2a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8a2 2 0 012-2h2M12 12v.01M12 16h.01M8 12h.01M16 12h.01"
             />
           </svg>
-          <h2 className="text-2xl font-semibold text-gray-500 mb-2">
+          <h2
+            style={{ color: "var(--text-secondary)" }}
+            className="text-2xl font-semibold mb-2"
+          >
             Select a chat
           </h2>
-          <p className="text-gray-400">
+          <p style={{ color: "var(--text-secondary)" }}>
             Choose a conversation from the sidebar to start messaging.
           </p>
         </div>
@@ -39,10 +54,22 @@ const ChatWindow: React.FC<Props> = ({ chat, input, setInput, onSend }) => {
   }
 
   return (
-    <main className="flex flex-col w-full h-screen bg-gray-100">
+    <main
+      style={{ background: "var(--bg-secondary)" }}
+      className="flex flex-col w-full h-screen"
+    >
       {/* Chat header */}
-      <div className="p-4 border-b bg-white shadow">
-        <h2 className="text-lg font-semibold">
+      <div
+        style={{
+          background: "var(--bg-primary)",
+          borderBottom: "1px solid var(--border-color)",
+        }}
+        className="p-6 shadow"
+      >
+        <h2
+          style={{ color: "var(--text-primary)" }}
+          className="text-lg font-semibold"
+        >
           {chat?.name ?? "Select a chat"}
         </h2>
       </div>
@@ -55,30 +82,50 @@ const ChatWindow: React.FC<Props> = ({ chat, input, setInput, onSend }) => {
             className={`flex ${msg.fromMe ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`max-w-[75%] px-4 py-2 rounded-xl text-xl shadow ${
+              style={
                 msg.fromMe
-                  ? "bg-blue-500 text-white rounded-br-none"
-                  : "bg-white text-gray-800 rounded-bl-none border"
+                  ? { background: "var(--primary-blue)", color: "#fff" }
+                  : {
+                      background: "var(--message-in)",
+                      color: "var(--text-primary)",
+                      border: "1px solid var(--border-color)",
+                    }
+              }
+              className={`max-w-[75%] px-4 py-2 rounded-xl text-xl shadow ${
+                msg.fromMe ? "rounded-br-none" : "rounded-bl-none"
               }`}
             >
               {msg.text}
             </div>
           </div>
         ))}
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Chat input */}
-      <div className="p-5 border-t bg-white flex gap-2">
+      <div
+        style={{
+          background: "var(--bg-primary)",
+          borderTop: "1px solid var(--border-color)",
+        }}
+        className="p-5 flex gap-2"
+      >
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && onSend()}
           placeholder="Type a message..."
-          className="flex-grow px-4 py-2 border rounded-full outline-none text-xl"
+          style={{
+            background: "var(--bg-secondary)",
+            color: "var(--text-primary)",
+            border: "1px solid var(--border-color)",
+          }}
+          className="flex-grow px-4 py-2 rounded-full outline-none text-xl"
         />
         <button
           onClick={onSend}
-          className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition"
+          style={{ background: "var(--primary-blue)" }}
+          className="text-white px-4 py-2 rounded-full hover:brightness-90 transition"
         >
           Send
         </button>
