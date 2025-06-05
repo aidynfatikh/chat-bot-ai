@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { Chat } from "./types";
 
 type Props = {
@@ -10,12 +10,29 @@ type Props = {
 
 const ChatWindow: React.FC<Props> = ({ chat, input, setInput, onSend }) => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const messagesContainerRef = useRef<HTMLDivElement | null>(null);
+  const [visibleCount, setVisibleCount] = useState(30); // Number of messages to show initially
 
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [chat?.messages.length]);
+
+  useEffect(() => {
+    setVisibleCount(30); // Reset visible messages when chat changes
+  }, [chat?.id]);
+
+  // Infinite scroll handler for messages (load more on scroll to top)
+  const handleScroll = () => {
+    if (!messagesContainerRef.current) return;
+    if (messagesContainerRef.current.scrollTop === 0) {
+      setVisibleCount((prev) => {
+        if (!chat) return prev;
+        return Math.min(prev + 30, chat.messages.length);
+      });
+    }
+  };
 
   if (!chat) {
     return (
@@ -75,8 +92,13 @@ const ChatWindow: React.FC<Props> = ({ chat, input, setInput, onSend }) => {
       </div>
 
       {/* Message list */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-2">
-        {chat?.messages.map((msg, index) => (
+      <div
+        ref={messagesContainerRef}
+        onScroll={handleScroll}
+        className="flex-1 overflow-y-auto p-4 space-y-2"
+        style={{ maxHeight: "calc(100vh - 180px)" }}
+      >
+        {chat?.messages.slice(-visibleCount).map((msg, index) => (
           <div
             key={index}
             className={`flex ${msg.fromMe ? "justify-end" : "justify-start"}`}
